@@ -79,19 +79,26 @@ export default function MainPage() {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">로딩 중...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="loading-pixel emoji-icon">🍼</div>
+      </div>
+    );
   }
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-blue-100 to-yellow-100 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full border-4 border-pink-300">
-          <h1 className="text-3xl font-bold text-center mb-2 text-pink-600">
-            🍼 분유만 먹던 내가
-          </h1>
-          <h2 className="text-2xl font-bold text-center mb-8 text-blue-600">
-            이유식은 미식가?! 🍽️
-          </h2>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="card-pixel p-8 max-w-md w-full">
+          <div className="text-center mb-8">
+            <div className="emoji-icon mb-4">🍼</div>
+            <h1 className="pixel-font text-2xl sm:text-3xl mb-2 text-pink-600 text-shadow-pixel">
+              분유만 먹던 내가
+            </h1>
+            <h2 className="pixel-font text-xl sm:text-2xl text-blue-600 text-shadow-pixel">
+              이유식은 미식가?! 🍽️
+            </h2>
+          </div>
 
           <div className="space-y-4">
             <input
@@ -100,13 +107,13 @@ export default function MainPage() {
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-              className="w-full px-4 py-3 border-2 border-pink-300 rounded-lg focus:outline-none focus:border-pink-500"
+              className="input-pixel w-full"
             />
             <button
               onClick={handleLogin}
-              className="w-full bg-pink-500 text-white py-3 rounded-lg font-bold hover:bg-pink-600 transition"
+              className="btn-pixel w-full bg-gradient-to-r from-pink-400 to-pink-500 text-white hover:from-pink-500 hover:to-pink-600"
             >
-              시작하기
+              🎮 시작하기
             </button>
           </div>
         </div>
@@ -115,51 +122,82 @@ export default function MainPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-blue-100 to-yellow-100 p-4">
+    <div className="min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border-4 border-pink-300">
-          <h1 className="text-3xl font-bold text-center mb-8 text-pink-600">
-            🍽️ {currentUser.name}님의 이유식 노트
-          </h1>
+        <div className="card-pixel p-6 sm:p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="emoji-icon mb-3">🍽️</div>
+            <h1 className="pixel-font text-2xl sm:text-3xl gradient-text mb-2">
+              {currentUser.name}님의 이유식 노트
+            </h1>
+            <p className="text-gray-600 text-sm">RPG 인벤토리 스타일 기록장</p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Main Navigation */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <button
               onClick={() => router.push('/diet')}
-              className="bg-blue-500 text-white py-6 rounded-xl font-bold text-xl hover:bg-blue-600 transition border-4 border-blue-700"
+              className="btn-pixel bg-gradient-to-br from-blue-400 to-blue-500 text-white hover:from-blue-500 hover:to-blue-600"
             >
-              📅 식단표
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-4xl">📅</span>
+                <span className="pixel-font text-xl">식단표</span>
+                <span className="text-xs opacity-80">오늘의 식사 기록</span>
+              </div>
             </button>
             <button
               onClick={() => router.push('/inventory')}
-              className="bg-green-500 text-white py-6 rounded-xl font-bold text-xl hover:bg-green-600 transition border-4 border-green-700"
+              className="btn-pixel bg-gradient-to-br from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600"
             >
-              🎒 창고
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-4xl">🎒</span>
+                <span className="pixel-font text-xl">창고</span>
+                <span className="text-xs opacity-80">재료 인벤토리</span>
+              </div>
             </button>
           </div>
 
-          <div className="border-t-2 border-gray-200 pt-6 space-y-4">
-            <h2 className="text-xl font-bold text-gray-700 mb-4">데이터 관리</h2>
-            <button
-              onClick={handleExport}
-              className="w-full bg-purple-500 text-white py-3 rounded-lg font-bold hover:bg-purple-600 transition"
-            >
-              💾 데이터 백업 (Export)
-            </button>
-            <label className="block">
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImport}
-                className="hidden"
-                id="import-file"
-              />
-              <div
-                onClick={() => document.getElementById('import-file')?.click()}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition text-center cursor-pointer"
+          {/* Data Management Section */}
+          <div className="border-t-4 border-gray-200 pt-6">
+            <h2 className="pixel-font text-lg sm:text-xl text-gray-700 mb-4 flex items-center gap-2">
+              <span>💾</span>
+              데이터 관리
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={handleExport}
+                className="btn-pixel bg-gradient-to-r from-purple-400 to-purple-500 text-white hover:from-purple-500 hover:to-purple-600"
               >
-                📂 데이터 복구 (Import)
-              </div>
-            </label>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-2xl">💾</span>
+                  <span>백업 (Export)</span>
+                </div>
+              </button>
+              <label className="block">
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImport}
+                  className="hidden"
+                  id="import-file"
+                />
+                <div
+                  onClick={() => document.getElementById('import-file')?.click()}
+                  className="btn-pixel bg-gradient-to-r from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span className="text-2xl">📂</span>
+                  <span>복구 (Import)</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Footer Info */}
+          <div className="mt-6 text-center">
+            <p className="text-xs text-gray-500">
+              💡 Tip: 정기적으로 데이터를 백업하세요!
+            </p>
           </div>
         </div>
       </div>

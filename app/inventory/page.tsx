@@ -47,63 +47,115 @@ export default function InventoryPage() {
 
     const inventoryItems = Object.values(inventory).filter(item => item.count > 0);
 
+    // Group by category
+    const groupedItems = inventoryItems.reduce((acc, item) => {
+        if (!acc[item.category]) acc[item.category] = [];
+        acc[item.category].push(item);
+        return acc;
+    }, {} as Record<string, typeof inventoryItems>);
+
+    const categoryEmojis: Record<string, string> = {
+        grain: '🌾',
+        veggie: '🥬',
+        meat: '🍖',
+        fruit: '🍎',
+        dairy: '🥛',
+    };
+
+    const categoryNames: Record<string, string> = {
+        grain: '곡류',
+        veggie: '채소',
+        meat: '육류',
+        fruit: '과일',
+        dairy: '유제품',
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-100 via-blue-100 to-yellow-100 p-4">
+        <div className="min-h-screen p-4 sm:p-6">
             <div className="max-w-6xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-2xl p-6 border-4 border-green-300">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-3xl font-bold text-green-600">🎒 창고 (인벤토리)</h1>
+                <div className="card-pixel p-4 sm:p-6">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <div className="text-center sm:text-left">
+                            <h1 className="pixel-font text-2xl sm:text-3xl gradient-text flex items-center gap-2 justify-center sm:justify-start">
+                                <span>🎒</span>
+                                창고 (인벤토리)
+                            </h1>
+                            <p className="text-sm text-gray-600 mt-1">
+                                보유 재료: {inventoryItems.length}종
+                            </p>
+                        </div>
                         <button
                             onClick={() => router.push('/')}
-                            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                            className="btn-pixel bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 px-6"
                         >
                             ← 메인으로
                         </button>
                     </div>
 
+                    {/* Add Cube Button */}
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition mb-6"
+                        className="btn-pixel w-full bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600 mb-6"
                     >
-                        ➕ 큐브 만들기
+                        <div className="flex items-center justify-center gap-2">
+                            <span className="text-2xl">➕</span>
+                            <span className="pixel-font">큐브 만들기</span>
+                        </div>
                     </button>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {inventoryItems.length === 0 ? (
-                            <div className="col-span-full text-center text-gray-500 py-12">
-                                보유한 재료가 없습니다. 큐브를 만들어보세요!
-                            </div>
-                        ) : (
-                            inventoryItems.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="bg-gradient-to-br from-white to-gray-100 border-4 border-green-400 rounded-xl p-4 text-center hover:shadow-lg transition"
-                                >
-                                    <div className="text-4xl mb-2">🧊</div>
-                                    <div className="font-bold text-sm">{item.nameKo}</div>
-                                    <div className="text-xs text-gray-600">{item.name}</div>
-                                    <div className="mt-2 bg-green-500 text-white rounded-full px-3 py-1 text-sm font-bold">
-                                        x{item.count}
+                    {/* Inventory Grid */}
+                    {inventoryItems.length === 0 ? (
+                        <div className="text-center py-16">
+                            <div className="emoji-icon mb-4">📦</div>
+                            <p className="text-gray-500 pixel-font">보유한 재료가 없습니다</p>
+                            <p className="text-sm text-gray-400 mt-2">큐브를 만들어보세요!</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            {Object.entries(groupedItems).map(([category, items]) => (
+                                <div key={category}>
+                                    <h3 className="pixel-font text-lg mb-3 flex items-center gap-2 text-gray-700">
+                                        <span className="text-2xl">{categoryEmojis[category]}</span>
+                                        {categoryNames[category]}
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                        {items.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="grid-item-pixel"
+                                            >
+                                                <div className="emoji-icon text-5xl mb-2">🧊</div>
+                                                <div className="font-bold text-sm">{item.nameKo}</div>
+                                                <div className="text-xs text-gray-600">{item.name}</div>
+                                                <div className="badge-pixel bg-green-500 text-white mt-2">
+                                                    x{item.count}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
+            {/* Add Cube Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full border-4 border-green-300">
-                        <h2 className="text-2xl font-bold mb-4 text-green-600">큐브 만들기</h2>
+                <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+                    <div className="modal-content card-pixel p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="pixel-font text-2xl mb-6 gradient-text text-center">
+                            큐브 만들기
+                        </h2>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold mb-2">재료 선택</label>
+                                <label className="block text-sm font-bold mb-2 pixel-font">재료 선택</label>
                                 <select
                                     value={selectedIngredient}
                                     onChange={(e) => setSelectedIngredient(e.target.value)}
-                                    className="w-full border-2 border-green-300 rounded-lg p-2"
+                                    className="input-pixel w-full"
                                 >
                                     <option value="">재료를 선택하세요</option>
                                     {INGREDIENT_IDS.map((id) => {
@@ -118,20 +170,20 @@ export default function InventoryPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold mb-2">수량</label>
+                                <label className="block text-sm font-bold mb-2 pixel-font">수량</label>
                                 <input
                                     type="number"
                                     min="1"
                                     value={cubeCount}
                                     onChange={(e) => setCubeCount(e.target.value)}
-                                    className="w-full border-2 border-green-300 rounded-lg p-2"
+                                    className="input-pixel w-full"
                                 />
                             </div>
 
-                            <div className="flex gap-2">
+                            <div className="grid grid-cols-2 gap-3 pt-2">
                                 <button
                                     onClick={handleAddCubes}
-                                    className="flex-1 bg-green-500 text-white py-2 rounded-lg font-bold hover:bg-green-600"
+                                    className="btn-pixel bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600"
                                 >
                                     확인
                                 </button>
@@ -141,7 +193,7 @@ export default function InventoryPage() {
                                         setSelectedIngredient('');
                                         setCubeCount('1');
                                     }}
-                                    className="flex-1 bg-gray-500 text-white py-2 rounded-lg font-bold hover:bg-gray-600"
+                                    className="btn-pixel bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
                                 >
                                     취소
                                 </button>

@@ -91,74 +91,110 @@ export default function DietPage() {
     };
 
     const dayRecord = dietRecord[selectedDate];
-    const currentMealData = dayRecord?.[currentMeal] || { ingredients: [], consumed: false };
     const availableIngredients = Object.values(inventory).filter(item => item.count > 0);
 
+    const mealConfig = {
+        breakfast: { name: '아침', emoji: '🌅', color: 'from-orange-400 to-orange-500' },
+        lunch: { name: '점심', emoji: '☀️', color: 'from-yellow-400 to-yellow-500' },
+        dinner: { name: '저녁', emoji: '🌙', color: 'from-indigo-400 to-indigo-500' },
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 p-4">
+        <div className="min-h-screen p-4 sm:p-6">
             <div className="max-w-6xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-2xl p-6 border-4 border-blue-300">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-3xl font-bold text-blue-600">📅 식단표</h1>
+                <div className="card-pixel p-4 sm:p-6">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <div className="text-center sm:text-left">
+                            <h1 className="pixel-font text-2xl sm:text-3xl gradient-text flex items-center gap-2 justify-center sm:justify-start">
+                                <span>📅</span>
+                                식단표
+                            </h1>
+                            <p className="text-sm text-gray-600 mt-1">오늘의 식사 기록</p>
+                        </div>
                         <button
                             onClick={() => router.push('/')}
-                            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                            className="btn-pixel bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 px-6"
                         >
                             ← 메인으로
                         </button>
                     </div>
 
-                    <input
-                        type="date"
-                        value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full border-2 border-blue-300 rounded-lg p-3 mb-6 text-lg"
-                    />
+                    {/* Date Picker */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-bold mb-2 pixel-font">날짜 선택</label>
+                        <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            className="input-pixel w-full"
+                        />
+                    </div>
 
+                    {/* Meals Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {(['breakfast', 'lunch', 'dinner'] as MealType[]).map((meal) => {
                             const mealData = dayRecord?.[meal] || { ingredients: [], consumed: false };
-                            const mealNames = { breakfast: '🌅 아침', lunch: '☀️ 점심', dinner: '🌙 저녁' };
+                            const config = mealConfig[meal];
 
                             return (
-                                <div key={meal} className="border-4 border-blue-400 rounded-xl p-4 bg-gradient-to-br from-white to-blue-50">
-                                    <h2 className="text-xl font-bold mb-3 text-center">{mealNames[meal]}</h2>
+                                <div key={meal} className="card-pixel p-4">
+                                    {/* Meal Header */}
+                                    <div className="text-center mb-4">
+                                        <div className="text-4xl mb-2">{config.emoji}</div>
+                                        <h2 className="pixel-font text-xl">{config.name}</h2>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            {mealData.ingredients.length}/10 재료
+                                        </p>
+                                    </div>
+
+                                    {/* Add Ingredient Button */}
                                     <button
                                         onClick={() => openMealModal(meal)}
-                                        className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600 mb-3"
+                                        className={`btn-pixel w-full bg-gradient-to-r ${config.color} text-white mb-4`}
                                     >
-                                        ➕ 재료 추가
+                                        <div className="flex items-center justify-center gap-2">
+                                            <span>➕</span>
+                                            <span>재료 추가</span>
+                                        </div>
                                     </button>
-                                    <div className="space-y-2">
+
+                                    {/* Ingredients List */}
+                                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
                                         {mealData.ingredients.length === 0 ? (
-                                            <div className="text-center text-gray-400 py-4 text-sm">재료 없음</div>
+                                            <div className="text-center py-8 text-gray-400 text-sm">
+                                                재료 없음
+                                            </div>
                                         ) : (
                                             mealData.ingredients.map((ing, idx) => {
                                                 const ingData = INGREDIENTS_DB[ing.id];
                                                 return (
-                                                    <div key={idx} className="bg-white border-2 border-blue-300 rounded-lg p-2 text-sm">
-                                                        <div className="flex justify-between items-center mb-1">
-                                                            <span className="font-bold">{ingData?.nameKo}</span>
+                                                    <div key={idx} className="card-pixel p-3">
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <span className="font-bold text-sm">{ingData?.nameKo}</span>
                                                             <button
                                                                 onClick={() => {
                                                                     setCurrentMeal(meal);
                                                                     removeIngredientFromMeal(idx);
                                                                 }}
-                                                                className="text-red-500 font-bold"
+                                                                className="text-red-500 font-bold text-xl hover:scale-110 transition-transform"
                                                             >
                                                                 ✕
                                                             </button>
                                                         </div>
-                                                        <input
-                                                            type="number"
-                                                            placeholder="g"
-                                                            value={ing.amount || ''}
-                                                            onChange={(e) => {
-                                                                setCurrentMeal(meal);
-                                                                updateIngredientAmount(idx, parseInt(e.target.value) || 0);
-                                                            }}
-                                                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs"
-                                                        />
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="number"
+                                                                placeholder="g"
+                                                                value={ing.amount || ''}
+                                                                onChange={(e) => {
+                                                                    setCurrentMeal(meal);
+                                                                    updateIngredientAmount(idx, parseInt(e.target.value) || 0);
+                                                                }}
+                                                                className="input-pixel flex-1 text-sm min-h-[44px]"
+                                                            />
+                                                            <span className="text-xs text-gray-500">g</span>
+                                                        </div>
                                                     </div>
                                                 );
                                             })
@@ -171,38 +207,53 @@ export default function DietPage() {
                 </div>
             </div>
 
+            {/* Ingredient Selection Modal */}
             {showMealModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto border-4 border-blue-300">
-                        <h2 className="text-2xl font-bold mb-4 text-blue-600">재료 선택</h2>
+                <div className="modal-overlay" onClick={() => setShowMealModal(false)}>
+                    <div className="modal-content card-pixel p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="pixel-font text-2xl mb-6 gradient-text text-center">
+                            재료 선택
+                        </h2>
 
                         {availableIngredients.length === 0 ? (
-                            <div className="text-center text-gray-500 py-8">
-                                창고에 재료가 없습니다!<br />
-                                먼저 창고에서 큐브를 만들어주세요.
+                            <div className="text-center py-12">
+                                <div className="emoji-icon mb-4">📦</div>
+                                <p className="text-gray-500 pixel-font mb-2">창고에 재료가 없습니다!</p>
+                                <p className="text-sm text-gray-400">먼저 창고에서 큐브를 만들어주세요.</p>
+                                <button
+                                    onClick={() => router.push('/inventory')}
+                                    className="btn-pixel bg-gradient-to-r from-green-400 to-green-500 text-white mt-4"
+                                >
+                                    창고로 이동
+                                </button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 gap-3 mb-4">
-                                {availableIngredients.map((item) => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => addIngredientToMeal(item.id)}
-                                        className="border-2 border-blue-400 rounded-lg p-3 hover:bg-blue-50 transition"
-                                    >
-                                        <div className="text-2xl mb-1">🧊</div>
-                                        <div className="font-bold text-sm">{item.nameKo}</div>
-                                        <div className="text-xs text-gray-600">x{item.count}</div>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                            <>
+                                <div className="grid grid-cols-2 gap-3 mb-4">
+                                    {availableIngredients.map((item) => (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => addIngredientToMeal(item.id)}
+                                            className="grid-item-pixel"
+                                        >
+                                            <div className="text-4xl mb-2">🧊</div>
+                                            <div className="font-bold text-sm">{item.nameKo}</div>
+                                            <div className="text-xs text-gray-600">{item.name}</div>
+                                            <div className="badge-pixel bg-blue-500 text-white mt-2 text-xs">
+                                                x{item.count}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
 
-                        <button
-                            onClick={() => setShowMealModal(false)}
-                            className="w-full bg-gray-500 text-white py-2 rounded-lg font-bold hover:bg-gray-600"
-                        >
-                            닫기
-                        </button>
+                                <button
+                                    onClick={() => setShowMealModal(false)}
+                                    className="btn-pixel w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600"
+                                >
+                                    닫기
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}
