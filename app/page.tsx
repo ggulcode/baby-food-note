@@ -81,7 +81,7 @@ export default function MainPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="loading-pixel emoji-icon">🍼</div>
+        <div className="loading-pixel emoji-icon float-animation">🍼</div>
       </div>
     );
   }
@@ -89,15 +89,16 @@ export default function MainPage() {
   if (!currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card-pixel p-8 max-w-md w-full">
+        <div className="card-pixel p-8 max-w-md w-full pixel-glow">
           <div className="text-center mb-8">
-            <div className="emoji-icon mb-4">🍼</div>
-            <h1 className="pixel-font text-2xl sm:text-3xl mb-2 text-pink-600 text-shadow-pixel">
+            <div className="emoji-icon mb-4 float-animation">🍼</div>
+            <h1 className="pixel-font text-2xl sm:text-3xl mb-2 text-pink-600 retro-shadow">
               분유만 먹던 내가
             </h1>
-            <h2 className="pixel-font text-xl sm:text-2xl text-blue-600 text-shadow-pixel">
+            <h2 className="pixel-font text-xl sm:text-2xl text-blue-600 retro-shadow">
               이유식은 미식가?! 🍽️
             </h2>
+            <p className="text-xs text-gray-600 mt-3 pixel-font">RPG 인벤토리 스타일 기록장</p>
           </div>
 
           <div className="space-y-4">
@@ -124,35 +125,35 @@ export default function MainPage() {
   return (
     <div className="min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="card-pixel p-6 sm:p-8">
-          {/* Header */}
+        <div className="card-pixel p-6 sm:p-8 pixel-glow">
+          {/* Header with Floating Logo */}
           <div className="text-center mb-8">
-            <div className="emoji-icon mb-3">🍽️</div>
-            <h1 className="pixel-font text-2xl sm:text-3xl gradient-text mb-2">
+            <div className="emoji-icon mb-3 float-animation">🍽️</div>
+            <h1 className="pixel-font text-2xl sm:text-3xl gradient-text mb-2 retro-shadow">
               {currentUser.name}님의 이유식 노트
             </h1>
-            <p className="text-gray-600 text-sm">RPG 인벤토리 스타일 기록장</p>
+            <p className="text-gray-600 text-sm pixel-font">🎮 RPG 인벤토리 스타일 기록장 🎮</p>
           </div>
 
           {/* Main Navigation */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <button
               onClick={() => router.push('/diet')}
-              className="btn-pixel bg-gradient-to-br from-blue-400 to-blue-500 text-white hover:from-blue-500 hover:to-blue-600"
+              className="btn-pixel bg-gradient-to-br from-blue-400 to-blue-500 text-white hover:from-blue-500 hover:to-blue-600 pixel-glow"
             >
               <div className="flex flex-col items-center gap-2">
                 <span className="text-4xl">📅</span>
-                <span className="pixel-font text-xl">식단표</span>
-                <span className="text-xs opacity-80">오늘의 식사 기록</span>
+                <span className="pixel-font text-xl retro-shadow">식단표</span>
+                <span className="text-xs opacity-80">달력으로 기록하기</span>
               </div>
             </button>
             <button
               onClick={() => router.push('/inventory')}
-              className="btn-pixel bg-gradient-to-br from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600"
+              className="btn-pixel bg-gradient-to-br from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600 pixel-glow"
             >
               <div className="flex flex-col items-center gap-2">
                 <span className="text-4xl">🎒</span>
-                <span className="pixel-font text-xl">창고</span>
+                <span className="pixel-font text-xl retro-shadow">창고</span>
                 <span className="text-xs opacity-80">재료 인벤토리</span>
               </div>
             </button>
@@ -160,7 +161,7 @@ export default function MainPage() {
 
           {/* Data Management Section */}
           <div className="border-t-4 border-gray-200 pt-6">
-            <h2 className="pixel-font text-lg sm:text-xl text-gray-700 mb-4 flex items-center gap-2">
+            <h2 className="pixel-font text-lg sm:text-xl text-gray-700 mb-4 flex items-center gap-2 retro-shadow">
               <span>💾</span>
               데이터 관리
             </h2>
@@ -171,7 +172,7 @@ export default function MainPage() {
               >
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-2xl">💾</span>
-                  <span>백업 (Export)</span>
+                  <span className="pixel-font">백업</span>
                 </div>
               </button>
               <label className="block">
@@ -187,7 +188,7 @@ export default function MainPage() {
                   className="btn-pixel bg-gradient-to-r from-orange-400 to-orange-500 text-white hover:from-orange-500 hover:to-orange-600 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <span className="text-2xl">📂</span>
-                  <span>복구 (Import)</span>
+                  <span className="pixel-font">복구</span>
                 </div>
               </label>
             </div>
@@ -195,8 +196,8 @@ export default function MainPage() {
 
           {/* Footer Info */}
           <div className="mt-6 text-center">
-            <p className="text-xs text-gray-500">
-              💡 Tip: 정기적으로 데이터를 백업하세요!
+            <p className="text-xs text-gray-500 pixel-font">
+              ⭐ Tip: 정기적으로 데이터를 백업하세요! ⭐
             </p>
           </div>
         </div>
